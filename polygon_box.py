@@ -155,14 +155,32 @@ class RoundedBox(inkex.Effect):
         path.LineToVRel(notch_length + burn * startinternal)
         path.LineToHRel(-notch_height)
 
-    def drawNotch(self, path, notch_length, notch_height, theta, burn):
+    def drawNotch(self, path, notch_length, notch_height, theta, burn, delta_first=0):
         ''' 
         Draw a single notch with size notch_length and height notch_height, notch is drawed with an angle theta
         '''
-        path.LineToRel((notch_length + burn)*math.cos(theta), (notch_length + burn)*math.sin(theta))
+        path.LineToRel((delta_first+notch_length + burn)*math.cos(theta), (notch_length + burn)*math.sin(theta))
         path.LineToRel(notch_height*math.cos(theta+math.pi/2), notch_height*math.sin(theta+math.pi/2))
         path.LineToRel((notch_length - burn)*math.cos(theta), (notch_length - burn)*math.sin(theta))
         path.LineToRel(notch_height*math.cos(theta-math.pi/2), notch_height*math.sin(theta-math.pi/2))
+
+    def drawLineHNotches(self, path, nb_notch, notch_length, notch_height, burn, startinternal):
+        if notch_length > 0:
+            sign = startinternal
+        else:
+            sign = -startinternal
+        self.drawHNotch(path, notch_length, notch_height, burn, startinternal, sign*burn/2)
+        for i in range(1, nb_notch):
+            self.drawHNotch(path, notch_length, notch_height, burn, startinternal, 0)
+
+    def drawLineVNotches(self, path, nb_notch, notch_length, notch_height, burn, startinternal):
+        if notch_length > 0:
+            sign = startinternal
+        else:
+            sign = -startinternal
+        self.drawVNotch(path, notch_length, notch_height, burn, startinternal, sign*burn/2)
+        for i in range(1, nb_notch):
+            self.drawVNotch(path, notch_length, notch_height, burn, startinternal, 0)
 
 
 
@@ -181,7 +199,8 @@ class RoundedBox(inkex.Effect):
             deltaX = math.cos((i+1)*2.0*math.pi/n_vertices) - math.cos(i*2.0*math.pi/n_vertices)
             deltaY = math.sin((i+1)*2.0*math.pi/n_vertices) - math.sin(i*2.0*math.pi/n_vertices)
             theta = math.atan2(deltaY, deltaX)
-            for j in range(nb_top_notch):
+            self.drawNotch(path, top_notch_size, thickness, theta, burn, -burn/2)
+            for j in range(1, nb_top_notch):
                 self.drawNotch(path, top_notch_size, thickness, theta, burn)
         path.LineTo(external_radius, 0)
             
@@ -231,21 +250,19 @@ class RoundedBox(inkex.Effect):
         #Left side has 
         path.MoveTo(0,0)
         #Draw first horizontal line with notches inside, so begin in x=0
-        for i in range(nb_top_notch):
-            self.drawHNotch(path, top_notch_size, -thickness, burn, 1, 0)
+        self.drawLineHNotches(path, nb_top_notch, top_notch_size, -thickness, burn, 1)
         path.LineTo(edge_length-edge_notch_height, 0)       #right side has outside notches so stop a little bit short of edge_length
         #Now draw vertical notches
-        for i in range(nb_edge_notch//2):
-            self.drawVNotch(path, edge_notch_size, edge_notch_height, burn/2, 1, 0)
+        self.drawLineVNotches(path, nb_edge_notch//2, edge_notch_size, edge_notch_height, burn, 1)
         path.LineTo(edge_length-edge_notch_height, zbox)
         #Then the return horizontal line, first notch is shifted by edge_notch_height
-        self.drawHNotch(path, -top_notch_size, thickness, burn, 1, edge_notch_height-burn)
+        self.drawHNotch(path, -top_notch_size, thickness, burn, 1, edge_notch_height-burn/2)
         for i in range(1, nb_top_notch):
             self.drawHNotch(path, -top_notch_size, thickness, burn, 1, 0)
         path.LineTo(0, zbox)       #right side has outside notches so stop a little bit short of edge_length
         #and at last (left) vertical line
-        for i in range(nb_edge_notch//2):
-            self.drawVNotch(path, -edge_notch_size, edge_notch_height, burn/2, 0, 0)
+        self.drawLineVNotches(path, nb_edge_notch//2, -edge_notch_size, edge_notch_height, burn, -1)
+
         path.LineTo(0, 0)
         path.Close()
         path.GenPath()
