@@ -200,7 +200,7 @@ class CardBox(inkex.Effect):
         path.Close()
         path.GenPath()
 
-    def gen_bottom(self, n_slots, length, top_notch_size_x, nb_top_notch_x, width, top_notch_size_y, nb_top_notch_y, thickness, burn, xOffset, yOffset, parent):
+    def gen_bottom(self, n_slots, x_card, length, top_notch_size_x, nb_top_notch_x, width, top_notch_size_y, nb_top_notch_y, thickness, burn, xOffset, yOffset, parent):
         '''
         Generate bottom element. This is a rectangle with notches on all edges
         We also need to draw holes in this element to accept the "walls" between card slots
@@ -227,12 +227,12 @@ class CardBox(inkex.Effect):
         for i in range(1, n_slots):
             #For each wall, draw holes corresponding at each notch_y
             for j in range(nb_top_notch_y):
-                self.drawHole(path, i*length/n_slots, j*2*top_notch_size_y + top_notch_size_y, thickness, top_notch_size_y, burn)
+                self.drawHole(path, i*(x_card+thickness), j*2*top_notch_size_y + top_notch_size_y, thickness, top_notch_size_y, burn)
             
         path.Close()
         path.GenPath()
 
-    def gen_front(self, n_slots, length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, xOffset, yOffset, parent):
+    def gen_front(self, n_slots, x_card, length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, xOffset, yOffset, parent):
         '''
         box front, this is is a rectangle with notches on 3 edges (not on top) and with holes for the walls
         '''
@@ -257,12 +257,12 @@ class CardBox(inkex.Effect):
         for i in range(1, n_slots):
             #For each wall, draw holes corresponding at each edge_notch
             for j in range(nb_edge_notch):
-                self.drawHole(path, i*length/n_slots, j*2*edge_notch_size + edge_notch_size+2*thickness, thickness, edge_notch_size, burn)
+                self.drawHole(path, i*(x_card+thickness), j*2*edge_notch_size + edge_notch_size+2*thickness, thickness, edge_notch_size, burn)
 
         path.Close()
         path.GenPath()
         
-    def gen_back(self, n_slots, length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, xOffset, yOffset, parent):
+    def gen_back(self, n_slots, x_card, length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, xOffset, yOffset, parent):
         '''
         box back, this is is a rectangle with notches on 3 edges (not on top) and with holes for the walls
         Last edge has a cut able to accept top side
@@ -292,7 +292,7 @@ class CardBox(inkex.Effect):
         for i in range(1, n_slots):
             #For each wall, draw holes corresponding at each edge_notch
             for j in range(nb_edge_notch):
-                self.drawHole(path, i*length/n_slots, j*2*edge_notch_size + edge_notch_size+2*thickness, thickness, edge_notch_size, burn)
+                self.drawHole(path, i*(x_card+thickness), j*2*edge_notch_size + edge_notch_size+2*thickness, thickness, edge_notch_size, burn)
 
         path.Close()
         path.GenPath()
@@ -394,21 +394,21 @@ class CardBox(inkex.Effect):
         path.Close()
         path.GenPath()
 
-    def gen_hinge(self, id_path, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, xOffset, yOffset, parent):
+    def gen_hinge(self, id_path, delta_l, size, top_notch_size, nb_top_notch, thickness, burn, xOffset, yOffset, parent):
         '''
         side hinge, this is is a line of notches
         '''
         path = inkcape_path((xOffset, yOffset), parent, id_path)
-        path.MoveTo(0,0)
+        path.MoveTo(-delta_l,0)
         #first H line without notches
-        path.LineTo(y_card, 0)
+        path.LineTo(size+delta_l, 0)
         #Second line (V)
-        path.LineTo(y_card, thickness)
+        path.LineTo(size+delta_l, thickness)
         #Third line (H)
-        self.drawLineHNotches(path, nb_top_notch_y, -top_notch_size_y, thickness, burn, 1)
-        path.LineTo(0, thickness)
+        self.drawLineHNotches(path, nb_top_notch, -top_notch_size, thickness, burn, 1)
+        path.LineTo(-delta_l, thickness)
         #and last one
-        path.LineTo(0, 0)
+        path.LineTo(-delta_l, 0)
         
         path.Close()
         path.GenPath()
@@ -510,11 +510,11 @@ class CardBox(inkex.Effect):
         #generate top
         self.gen_top(internal_length, top_notch_size_x, nb_top_notch_x, y_card, thickness, burn, 0, 0, group)
         #generate bottom
-        self.gen_bottom(n_slots, internal_length, top_notch_size_x, nb_top_notch_x, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, -internal_length - 5, 0, group)
+        self.gen_bottom(n_slots, x_card, internal_length, top_notch_size_x, nb_top_notch_x, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, -internal_length - 5, 0, group)
         #Generate front side
-        self.gen_front(n_slots, internal_length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, 0, -y_card-thickness - 5, group)
+        self.gen_front(n_slots, x_card, internal_length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, 0, -y_card-thickness - 5, group)
         #Generate back side
-        self.gen_back(n_slots, internal_length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, -internal_length - 2*thickness - 5, -y_card-thickness - 5, group)
+        self.gen_back(n_slots, x_card, internal_length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, -internal_length - 2*thickness - 5, -y_card-thickness - 5, group)
         #generate left and right side
         self.gen_side('LEFT',  y_card, top_notch_size_y, nb_top_notch_y, zbox, edge_notch_size, nb_edge_notch, thickness, burn, 0, - zbox -y_card-3*thickness - 10, group)     
         self.gen_side('RIGHT',  y_card, top_notch_size_y, nb_top_notch_y, zbox, edge_notch_size, nb_edge_notch, thickness, burn, -y_card-2*thickness - 5, -zbox-y_card-3*thickness - 10, group)     
@@ -525,10 +525,10 @@ class CardBox(inkex.Effect):
         for i in range(n_slots):
             self.gen_internal_wall(i, y_card, top_notch_size_y, nb_top_notch_y, zbox-thickness, edge_notch_size, nb_edge_notch, thickness, burn, i*(-y_card-2*thickness-5), - 3*zbox -y_card-3*thickness - 15, group) 
         #then Side hinges
-        self.gen_hinge('LEFT_HINGE', y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, 0, - 4*zbox -y_card-3*thickness - 20, group)
-        self.gen_hinge('RIGHT_HINGE', y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, -y_card-2*thickness - 5, - 4*zbox -y_card-3*thickness - 20, group)
+        self.gen_hinge('LEFT_HINGE', 0, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, 0, - 4*zbox -y_card-3*thickness - 20, group)
+        self.gen_hinge('RIGHT_HINGE', 0, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, -y_card-2*thickness - 5, - 4*zbox -y_card-3*thickness - 20, group)
         #and at last back_hinge
-        self.gen_hinge('BACK_HINGE', internal_length, top_notch_size_x, nb_top_notch_x, thickness, burn, 0, - 4*zbox -y_card-5*thickness - 25, group)
+        self.gen_hinge('BACK_HINGE', thickness, internal_length, top_notch_size_x, nb_top_notch_x, thickness, burn, -internal_length - 2*thickness - 5, -y_card-thickness - 3, group)
         #Close Debug file if open
         if self.fDebug:
             self.fDebug.close()
