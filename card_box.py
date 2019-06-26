@@ -404,6 +404,8 @@ class CardBox(inkex.Effect):
         path.LineTo(size+delta_l, 0)
         #Second line (V)
         path.LineTo(size+delta_l, thickness)
+        if delta_l > 0:
+            path.LineToHRel(-delta_l)
         #Third line (H)
         self.drawLineHNotches(path, nb_top_notch, -top_notch_size, thickness, burn, 1)
         path.LineTo(-delta_l, thickness)
@@ -522,7 +524,7 @@ class CardBox(inkex.Effect):
         self.gen_internal_side('LEFT_INTERNAL', y_card, zbox-thickness, thickness, 0, - 2*zbox - y_card-3*thickness - 15, group)  
         self.gen_internal_side('RIGHT_INTERNAL', y_card, zbox-thickness, thickness, -y_card-2*thickness - 5, - 2*zbox - y_card-3*thickness - 15, group)  
         #Then internal walls
-        for i in range(n_slots):
+        for i in range(n_slots-1):
             self.gen_internal_wall(i, y_card, top_notch_size_y, nb_top_notch_y, zbox-thickness, edge_notch_size, nb_edge_notch, thickness, burn, i*(-y_card-2*thickness-5), - 3*zbox -y_card-3*thickness - 15, group) 
         #then Side hinges
         self.gen_hinge('LEFT_HINGE', 0, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, 0, - 4*zbox -y_card-3*thickness - 20, group)
