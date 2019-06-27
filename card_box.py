@@ -511,26 +511,26 @@ class CardBox(inkex.Effect):
             edge_notch_size = (zbox-4*thickness)/(2*nb_edge_notch+1)
         #generate top
         self.gen_top(internal_length, top_notch_size_x, nb_top_notch_x, y_card, thickness, burn, 0, 0, group)
-        #generate bottom
-        self.gen_bottom(n_slots, x_card, internal_length, top_notch_size_x, nb_top_notch_x, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, -internal_length - 5, 0, group)
-        #Generate front side
-        self.gen_front(n_slots, x_card, internal_length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, 0, -y_card-thickness - 5, group)
+        #generate bottom, drawingis right from previous one with 2 mm interval 
+        self.gen_bottom(n_slots, x_card, internal_length, top_notch_size_x, nb_top_notch_x, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, -internal_length -thickness - 2, 0, group)
+        #Generate front side, drawing is below the top
+        self.gen_front(n_slots, x_card, internal_length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, 0, -y_card - 2, group)
         #Generate back side
         self.gen_back(n_slots, x_card, internal_length, top_notch_size_x, nb_top_notch_x, zbox, edge_notch_size, nb_edge_notch, thickness, burn, -internal_length - 2*thickness - 5, -y_card-thickness - 5, group)
         #generate left and right side
-        self.gen_side('LEFT',  y_card, top_notch_size_y, nb_top_notch_y, zbox, edge_notch_size, nb_edge_notch, thickness, burn, 0, - zbox -y_card-3*thickness - 10, group)     
-        self.gen_side('RIGHT',  y_card, top_notch_size_y, nb_top_notch_y, zbox, edge_notch_size, nb_edge_notch, thickness, burn, -y_card-2*thickness - 5, -zbox-y_card-3*thickness - 10, group)     
+        self.gen_side('LEFT',  y_card, top_notch_size_y, nb_top_notch_y, zbox, edge_notch_size, nb_edge_notch, thickness, burn, 0, - zbox -y_card-4*thickness - 7, group)     
+        self.gen_side('RIGHT',  y_card, top_notch_size_y, nb_top_notch_y, zbox, edge_notch_size, nb_edge_notch, thickness, burn, -y_card-2*thickness - 5, -zbox-y_card-4*thickness - 7, group)     
         #Then internal LEFT and internal RIGHT, which are close to left and right edges
-        self.gen_internal_side('LEFT_INTERNAL', y_card, zbox-thickness, thickness, 0, - 2*zbox - y_card-3*thickness - 15, group)  
-        self.gen_internal_side('RIGHT_INTERNAL', y_card, zbox-thickness, thickness, -y_card-2*thickness - 5, - 2*zbox - y_card-3*thickness - 15, group)  
+        self.gen_internal_side('LEFT_INTERNAL', y_card, zbox-thickness, thickness, 0, - 2*zbox - y_card-5*thickness - 9, group)  
+        self.gen_internal_side('RIGHT_INTERNAL', y_card, zbox-thickness, thickness, -y_card-2*thickness - 5, - 2*zbox - y_card-5*thickness - 9, group)  
         #Then internal walls
         for i in range(n_slots-1):
-            self.gen_internal_wall(i, y_card, top_notch_size_y, nb_top_notch_y, zbox-thickness, edge_notch_size, nb_edge_notch, thickness, burn, i*(-y_card-2*thickness-5), - 3*zbox -y_card-3*thickness - 15, group) 
+            self.gen_internal_wall(i, y_card, top_notch_size_y, nb_top_notch_y, zbox-thickness, edge_notch_size, nb_edge_notch, thickness, burn, i*(-y_card-2*thickness-5), - 3*zbox -y_card-4*thickness - 11, group) 
         #then Side hinges
-        self.gen_hinge('LEFT_HINGE', 0, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, 0, - 4*zbox -y_card-3*thickness - 20, group)
-        self.gen_hinge('RIGHT_HINGE', 0, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, -y_card-2*thickness - 5, - 4*zbox -y_card-3*thickness - 20, group)
+        self.gen_hinge('LEFT_HINGE', 0, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, 0, - 4*zbox -y_card-4*thickness - 13, group)
+        self.gen_hinge('RIGHT_HINGE', 0, y_card, top_notch_size_y, nb_top_notch_y, thickness, burn, -y_card-2*thickness - 5, - 4*zbox -y_card-4*thickness - 13, group)
         #and at last back_hinge
-        self.gen_hinge('BACK_HINGE', thickness, internal_length, top_notch_size_x, nb_top_notch_x, thickness, burn, -internal_length - 2*thickness - 5, -y_card-thickness - 3, group)
+        self.gen_hinge('BACK_HINGE', thickness, internal_length, top_notch_size_x, nb_top_notch_x, thickness, burn, -internal_length - 2*thickness - 5, -y_card-thickness - 2, group)
         #Close Debug file if open
         if self.fDebug:
             self.fDebug.close()
