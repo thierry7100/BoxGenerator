@@ -396,9 +396,9 @@ class CoffinBox(inkex.Effect):
             #Draw back notches
             if nb_back_notch_z > 0:
                 self.drawLineVNotches(path, nb_back_notch_z, back_notch_size_z, thickness, burn, 1)
-            path.LineTo(length, height-ExtRadius)
-            #Then the rounded cut, quarter of circle, radius ExtRadius
-            path.Bezier(length-ExtRadius*0.551916, height-ExtRadius, length-ExtRadius, height-ExtRadius*0.551916, length-ExtRadius, height)
+            path.LineTo(length, height-ExtRadius*0.95)
+            #Then the rounded cut, almost a quarter of circle, radius ExtRadius
+            path.Bezier(length-ExtRadius*0.23, height-ExtRadius*0.90, length-ExtRadius+thickness, height-ExtRadius*0.551916, length-ExtRadius+thickness, height)
             #Third line (H) without notches
             path.LineTo(0, height)
             #draw front notches
@@ -412,9 +412,9 @@ class CoffinBox(inkex.Effect):
                 self.drawLineVNotches(path, nb_front_notch_z, front_notch_size_z, thickness, burn, 1)
             path.LineTo(length, height)
             #Third line (H) without notches
-            path.LineTo(ExtRadius, height)
-            #Draw the rounded cut, quarter of circle, radius ExtRadius
-            path.Bezier(ExtRadius, height-ExtRadius*0.551916, ExtRadius*0.551916, height-ExtRadius, 0, height-ExtRadius)
+            path.LineTo(ExtRadius-thickness, height)
+            #Draw the rounded cut, almost a quarter of circle, radius ExtRadius
+            path.Bezier(ExtRadius-thickness, height-ExtRadius*0.551916, ExtRadius*0.23, height-ExtRadius*0.90, 0, height-ExtRadius*0.95)
             #Draw back notches
             path.LineTo(0, height-delta_z_back)
             if nb_back_notch_z > 0:
@@ -777,7 +777,7 @@ class CoffinBox(inkex.Effect):
         #DeltaZ1 is used at the start of cut, it is more important because the axis is nearer
         #I choose to not take into account the fact that the axis is shifted by HiddenSteelAxisSize/2, the difference is very small (about 0.1mm)
         DeltaZ = (2.0 - math.sqrt(3.0))*thickness
-        DeltaZ1 = (math.sqrt(2.0) - 1)*thickness - DeltaZ
+        DeltaZ1 = thickness - DeltaZ
 
         path.MoveTo(-thickness, zlid+DeltaZ1)
         path.LineToHRel(4*thickness)
@@ -1150,11 +1150,11 @@ class CoffinBox(inkex.Effect):
                 self.gen_side_Steel(0, ybox, top_notch_size_y, nb_top_notch_y, zbox, size_notch_z, nb_notch_z, delta_z, thickness, burn, 0 , -ybox - 2*zbox -3*zlid - 6*thickness - 12, group)
             else:
                 # Now generate sides, Right lid first
-                self.gen_lid_side_HiddenSteel(1, ybox, top_notch_size_y, nb_top_notch_y, zlid, size_notch_lid_front_z, nb_notch_lid_front_z, delta_lid_front_z, size_notch_lid_back_z, nb_notch_lid_back_z, delta_lid_back_z, thickness, burn, 0 , -ybox - 2*zbox - 2*zlid - 6*thickness - 6, group)
+                self.gen_lid_side_Steel(1, ybox, top_notch_size_y, nb_top_notch_y, zlid, size_notch_lid_front_z, nb_notch_lid_front_z, delta_lid_front_z, thickness, burn, 0 , -ybox - 2*zbox - 2*zlid - 6*thickness - 6, group)
                 # Right side
-                self.gen_lid_side_Steel(1, ybox, top_notch_size_y, nb_top_notch_y, zbox, size_notch_z, nb_notch_z, delta_z, thickness, burn, 0 , -ybox - 2*zbox -3*zlid - 6*thickness - 8, group)
+                self.gen_side_Steel(1, ybox, top_notch_size_y, nb_top_notch_y, zbox, size_notch_z, nb_notch_z, delta_z, thickness, burn, 0 , -ybox - 2*zbox -3*zlid - 6*thickness - 8, group)
                 # Then left lid
-                self.gen_lid_side_HiddenSteel(0, ybox, top_notch_size_y, nb_top_notch_y, zlid, size_notch_lid_front_z, nb_notch_lid_front_z, delta_lid_front_z, size_notch_lid_back_z, nb_notch_lid_back_z, delta_lid_back_z, thickness, burn, -ybox - 2*thickness - 2 , -ybox - 2*zbox - 2*zlid - 6*thickness - 6, group)
+                self.gen_lid_side_Steel(0, ybox, top_notch_size_y, nb_top_notch_y, zlid, size_notch_lid_front_z, nb_notch_lid_front_z, delta_lid_front_z, thickness, burn, -ybox - 2*thickness - 2 , -ybox - 2*zbox - 2*zlid - 6*thickness - 6, group)
                 self.gen_side_Steel(0, ybox, top_notch_size_y, nb_top_notch_y, zbox, size_notch_z, nb_notch_z, delta_z, thickness, burn, -ybox - 2*thickness - 2 ,  -ybox - 2*zbox -3*zlid - 6*thickness - 8, group)
 
             
