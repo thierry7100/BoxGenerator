@@ -23,7 +23,7 @@ In my case some text appears in French language (my default language) because of
  
  When all parameters are set, click on apply and a box will be created. This box is enclosed in an inkscape group. Each element in a group has an id (top, bottom, side) which explain which piece is, but this should be straight forward.
  
-###Polygon boxes
+####Polygon boxes
  
 The upper and lower edges of theses boxes is a polygon. Here is two examples of theses boxes
 ![Otco Box](Octo_1.png  "Octo box with polygonal lid")![Hex box](Hexa_1.png  "Hex box with circular lid")
@@ -42,7 +42,7 @@ In my case some text appears in French language (my default language) because of
  When all parameters are set, click on apply and a box will be created. This box is enclosed in an inkscape group. Each element in a group has an id (top, bottom, side) which explain which piece is, but this should be straight forward.
  
  
-###Boxes with hinges
+####Boxes with hinges
  
 You can draw boxes with hinges, either steel hinge or integrated wood hinge (no other part).
 Here is the box with steel hinge
@@ -67,3 +67,11 @@ In my case some text appears in French language (my default language) because of
  When all parameters are set, click on apply and a box will be created. This box is enclosed in an inkscape group. Each element in a group has an id (top, bottom, side) which explain which piece is, but this should be straight forward.
  
  
+###Software installation
+First locate your inkscape extension directory, this directory is listed at Edit > Preferences > System: User extensions.
+First you have to choose your language. If you select english, copy all files ending with 'en.inx' in your inkscape extension directory. If you prefer french, choose files ending with 'fr.inx'.
+Then copy the program files (with an .py extension) also in your inkscape extension directory.
+After a restart of Inkscape, these new extensions should appear in the menu extensions/Fablab
+
+Enjoy !
+If you have issues, let me know.
