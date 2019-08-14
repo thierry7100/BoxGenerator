@@ -14,11 +14,12 @@ objStyle = simplestyle.formatStyle(
     })
 
 class inkcape_path:
-    def __init__(self, Offset, group):
+    def __init__(self, Offset, group, Label=None):
         self.offsetX = Offset[0]
         self.offsetY = Offset[1]
         self.Path = ''
         self.group = group
+        self.Label = Label
     
     def MoveTo(self, x, y):
     #Return string 'M X Y' where X and Y are updated values from parameters
@@ -64,13 +65,13 @@ class inkcape_path:
         self.Path += ' z'
 
     def GenPath(self):
-        line_attribs = {'style': objStyle, 'd': self.Path}
+        if self.Label:
+            line_attribs = {'style': objStyle, 'id' : self.Label, 'd': self.Path}
+        else:            
+            line_attribs = {'style': objStyle, 'd': self.Path}
         inkex.etree.SubElement(self.group, inkex.addNS('path', 'svg'), line_attribs)
-        
 
-
-
-class RoundedBox(inkex.Effect):
+class PolygonBox(inkex.Effect):
     """
     Creates a new layer with the drawings for a parametrically generaded box.
     """
@@ -184,12 +185,12 @@ class RoundedBox(inkex.Effect):
 
 
 
-    def gen_top_bottom(self, external_radius, n_vertices, top_notch_size, nb_top_notch, thickness, burn, has_hole, xOffset, yOffset, parent):
+    def gen_top_bottom(self, id, external_radius, n_vertices, top_notch_size, nb_top_notch, thickness, burn, has_hole, xOffset, yOffset, parent):
         '''
         Generate bottom or top element. When the box is closed, these elements are identical.
         When the box is open or with a lid, the top has a hole cut.
         '''
-        path = inkcape_path((xOffset - external_radius, yOffset - external_radius), parent)
+        path = inkcape_path((xOffset - external_radius, yOffset - external_radius), parent, id)
         self.DebugMsg("Enter gen_top_bottom: external_radius="+str(external_radius)+", n_vertices="+str(n_vertices)+", top_notch_size="+str(top_notch_size)+", nb_top_notch="+str(nb_top_notch)+"\n")
         for i in range(n_vertices):
             if i == 0:
@@ -225,7 +226,7 @@ class RoundedBox(inkex.Effect):
         '''
         Generate lid, it is either a circle or a polygon
         '''
-        path = inkcape_path((xOffset - external_radius, yOffset - external_radius), parent)
+        path = inkcape_path((xOffset - external_radius, yOffset - external_radius), parent, 'Lid')
         if has_circle_top:
             radius = external_radius * math.cos(math.pi/n_vertices)
             path.MoveTo(radius, 0)
@@ -244,9 +245,9 @@ class RoundedBox(inkex.Effect):
         path.Close()
         path.GenPath()
         
-    def gen_vertical(self, edge_length, zbox, top_notch_size, nb_top_notch, edge_notch_size, edge_notch_height, nb_edge_notch, thickness, burn, xOffset, yOffset, parent):
+    def gen_vertical(self, index, edge_length, zbox, top_notch_size, nb_top_notch, edge_notch_size, edge_notch_height, nb_edge_notch, thickness, burn, xOffset, yOffset, parent):
         self.DebugMsg("Entering gen_vertical, edge_length="+str(edge_length)+", zbox="+str(zbox)+", nb_edge_notch="+str(nb_edge_notch)+", edge_notch_size="+str(edge_notch_size)+", edge_notch_height="+str(edge_notch_height)+"\n") 
-        path = inkcape_path((xOffset, yOffset), parent)
+        path = inkcape_path((xOffset, yOffset), parent, 'Side_'+str(index))
         #Left side has 
         path.MoveTo(0,0)
         #Draw first horizontal line with notches inside, so begin in x=0
@@ -318,7 +319,7 @@ class RoundedBox(inkex.Effect):
         try:
             self.fDebug = open( 'DebugPolygonBox.txt', 'w')
         except IOError:
-            print ('cannot open debug output file')
+            pass
         self.DebugMsg("Start processing\n")
         #compute length of each edge
         edge_length = 2*radius * math.tan(math.pi / n_vertices)
@@ -363,20 +364,20 @@ class RoundedBox(inkex.Effect):
         else:
             edge_notch_height = thickness * math.sin(2*math.pi/n_vertices)
         #generate top
-        self.gen_top_bottom(external_radius, n_vertices, top_notch_size, nb_top_notch, thickness, burn, has_hole, 0, 0, group)
+        self.gen_top_bottom('Top', external_radius, n_vertices, top_notch_size, nb_top_notch, thickness, burn, has_hole, 0, 0, group)
         #generate bottom
-        self.gen_top_bottom(external_radius, n_vertices, top_notch_size, nb_top_notch, thickness, burn, 0, -2*external_radius-2*thickness-2, 0, group)
+        self.gen_top_bottom('Bottom', external_radius, n_vertices, top_notch_size, nb_top_notch, thickness, burn, 0, -2*external_radius-2*thickness-2, 0, group)
         #Then lid if needed
         if has_lid:
             self.gen_lid(external_radius, n_vertices, has_circle_top, -4*external_radius-4*thickness-4, 0, group)
         #And vertical plates, one for each edge of the polygon
         for i in range(n_vertices):
-            self.gen_vertical(edge_length, zbox, top_notch_size, nb_top_notch, edge_notch_size, edge_notch_height, nb_edge_notch, thickness, burn, -1*i*(edge_length+2*edge_notch_height+2), -2*external_radius-2*thickness-2, group)
+            self.gen_vertical(i, edge_length, zbox, top_notch_size, nb_top_notch, edge_notch_size, edge_notch_height, nb_edge_notch, thickness, burn, -1*i*(edge_length+2*edge_notch_height+2), -2*external_radius-2*thickness-2, group)
         #Close Debug file if open
         if self.fDebug:
             self.fDebug.close()
 
 
 # Create effect instance and apply it.
-effect = RoundedBox()
+effect = PolygonBox()
 effect.affect()

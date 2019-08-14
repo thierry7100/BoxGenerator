@@ -459,7 +459,7 @@ class CardBox(inkex.Effect):
         try:
             self.fDebug = open( 'DebugCardBox.txt', 'w')
         except IOError:
-            print ('cannot open debug output file')
+            pass
         self.DebugMsg("Start processing\n")
         #compute total internal length
         internal_length = x_card * n_slots + (n_slots-1)*thickness + 2*thickness

@@ -14,11 +14,12 @@ objStyle = simplestyle.formatStyle(
     })
 
 class inkcape_path:
-    def __init__(self, Offset, group):
+    def __init__(self, Offset, group, Label=None):
         self.offsetX = Offset[0]
         self.offsetY = Offset[1]
         self.Path = ''
         self.group = group
+        self.Label = Label
     
     def MoveTo(self, x, y):
     #Return string 'M X Y' where X and Y are updated values from parameters
@@ -64,11 +65,11 @@ class inkcape_path:
         self.Path += ' z'
 
     def GenPath(self):
-        line_attribs = {'style': objStyle, 'd': self.Path}
+        if self.Label:
+            line_attribs = {'style': objStyle, 'id' : self.Label, 'd': self.Path}
+        else:            
+            line_attribs = {'style': objStyle, 'd': self.Path}
         inkex.etree.SubElement(self.group, inkex.addNS('path', 'svg'), line_attribs)
-        
-
-
 
 class RoundedBox(inkex.Effect):
     """
@@ -164,7 +165,7 @@ class RoundedBox(inkex.Effect):
         path.LineToHRel(-notch_height)
 
 
-    def gen_top_bottom(self, length, width, notch_size, round_radius, thickness, burn, has_hole, xOffset, yOffset, parent):
+    def gen_top_bottom(self, id, length, width, notch_size, round_radius, thickness, burn, has_hole, xOffset, yOffset, parent):
         '''
         Generate bottom or top element. Xhen the box is closed, these elements are identical.
         When the box is open or with a lid, the top has a rounded rectangle cut.
@@ -191,7 +192,7 @@ class RoundedBox(inkex.Effect):
         size_notches_y = straight_y / nb_notches_y
         self.DebugMsg("Notches x : NB="+str(nb_notches_x)+" Size="+str(size_notches_x)+'\n')
         self.DebugMsg("Notches y : NB="+str(nb_notches_y)+" Size="+str(size_notches_y)+'\n')
-        path = inkcape_path((xOffset, yOffset), parent)
+        path = inkcape_path((xOffset, yOffset), parent, id)
 
         # goto origin (round_radius, 0)
         path.MoveTo(round_radius, 0)
@@ -269,7 +270,7 @@ class RoundedBox(inkex.Effect):
         #First compute the size of the straight lines
         straight_x = length - 2*round_radius
         straight_y = width - 2*round_radius
-        path = inkcape_path((xOffset, yOffset), parent)
+        path = inkcape_path((xOffset, yOffset), parent, 'Lid')
 
         # goto Origin (round_radius, 0)
         path.MoveTo(round_radius, 0)
@@ -339,7 +340,7 @@ class RoundedBox(inkex.Effect):
         self.DebugMsg("Notches x : NB="+str(nb_notches_x)+" Size="+str(size_notches_x)+'\n')
         self.DebugMsg("Notches y : NB="+str(nb_notches_y)+" Size="+str(size_notches_y)+'\n')
         #Open the path which will be used
-        path = inkcape_path((xOffset, yOffset), parent)
+        path = inkcape_path((xOffset, yOffset), parent, 'Side_flex')
         #The path will start at the middle of longest side.
         StartX = straight_x > straight_y
         if StartX:
@@ -585,12 +586,12 @@ class RoundedBox(inkex.Effect):
         try:
             self.fDebug = open( 'DebugRoundedBox.txt', 'w')
         except IOError:
-            print ('cannot open debug output file')
+            pass
         self.DebugMsg("Start processing\n")        
         #generate top
-        self.gen_top_bottom(xbox, ybox, notch_size, rounded_radius, thickness, burn, has_hole, 0, 0, group)
+        self.gen_top_bottom('Top', xbox, ybox, notch_size, rounded_radius, thickness, burn, has_hole, 0, 0, group)
         #generate bottom
-        self.gen_top_bottom(xbox, ybox, notch_size, rounded_radius, thickness, burn, 0, 0, -ybox-2*thickness-2, group)
+        self.gen_top_bottom('Bottom', xbox, ybox, notch_size, rounded_radius, thickness, burn, 0, 0, -ybox-2*thickness-2, group)
         #Then lid if needed
         if has_lid:
             self.gen_lid(xbox+2*thickness, ybox+2*thickness, rounded_radius+thickness, -xbox-2*thickness-2, 0, group)

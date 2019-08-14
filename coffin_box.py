@@ -937,7 +937,7 @@ class CoffinBox(inkex.Effect):
         try:
             self.fDebug = open( 'DebugCoffinBox.txt', 'w')
         except IOError:
-            print ('cannot open debug output file')
+            pass
         self.DebugMsg("Start processing\n")
 
         #compute notch size for x and y
