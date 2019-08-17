@@ -1,0 +1,33 @@
+<inkscape-extension>
+	<_name>Cardbox generator</_name>
+	<id>fr.fablab-lannion.inkscape.card_box</id>
+	<dependency type="executable" location="extensions">inkex.py</dependency>
+	<dependency type="executable" location="extensions">card_box.py</dependency>
+	<param name="unit" type="enum" _gui-text="Unit">
+		<_item value="mm">mm</_item>
+		<_item value="cm">cm</_item>
+		<_item value="m">m</_item>
+		<_item value="km">km</_item>
+		<_item value="in">in</_item>
+		<_item value="ft">ft</_item>
+		<_item value="yd">yd</_item>
+		<_item value="pt">pt</_item>
+		<_item value="px">px</_item>
+		<_item value="pc">pc</_item>
+	</param>
+	<param name="n_slot" type="int" min="2" max="20" _gui-text="# of decks">2</param>
+	<param name="x_card" type="float" min="10.0" max="1000.0" _gui-text="Card width">58.0</param>
+	<param name="y_card" type="float" min="10.0" max="1000.0" _gui-text="Card height">89.0</param>
+	<param name="z" type="float" min="10.0" max="1000.0" _gui-text="Deck height">40.0</param>
+	<param name="thickness" type="float" min="1.0" max="10.0" _gui-text="Thickness">3.0</param>
+	<param name="burn" type="float" min="0.0" max="2.0" _gui-text="Burn factor">0.1</param>
+	<effect>
+		<object-type>all</object-type>
+		<effects-menu>
+			<submenu _name="Fablab" />
+		</effects-menu>
+	</effect>
+	<script>
+		<command reldir="extensions" interpreter="python">card_box.py</command>
+	</script>
+</inkscape-extension>

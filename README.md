@@ -1,6 +1,6 @@
 # Making boxes with a laser cutting machine
 
-Laser cutting machines are somewhat magical. They enable the non gifted guy with two left hands (that's me) to have very nice results.
+Laser cutting machines are somewhat amazing. They enable the non gifted guy with two left hands (that's me) to have very nice results.
 
 In this project, I use a laser cutting machine to create wood boxes. They are several types of boxes, detailled below. In any case, the generator is an inkscape extension.
 
@@ -28,7 +28,7 @@ In my case some text appears in French language (my default language) because of
 The upper and lower edges of theses boxes is a polygon. Here is two examples of theses boxes
 ![Otco Box](Octo_1.png  "Octo box with polygonal lid")![Hex box](Hexa_1.png  "Hex box with circular lid")
 When chosen, this extension will open a dialog box with several options fields.
-![Rounded Box dialog](PolygonBox_dialog.png  "Rounded box generator dialog box")
+![Rounded Box dialog](PolygonBox_dialog.png  "Polygonal box generator dialog box")
 In my case some text appears in French language (my default language) because of the inkscape automatic translation feature. For French speakers, I have a version which is entirely in French.
 1. Unit : unit to be chosen, should be mm or inch.
 2. Number of egdes : choose an integral number. Should not be too large, as a joint is mandatory per side. 
@@ -53,7 +53,7 @@ I use a 3mm nail to build the hinge, it has to be cut at the right length.
 ![Box with wood hinge](Coffin3.png  "Box with wood hinge")![Box with wood hinge](Coffin4.png  "Box with wood hinge"). 
 No other part is needed to build this box. The lid move is a little less smooth than with the steel hinge, as there is more friction with wood than steel.
 When chosen, this extension will open a dialog box with several options fields.
-![Box with hinge dialog](HingeBox_Dialog.png  "Rounded box generator dialog box")
+![Box with hinge dialog](HingeBox_Dialog.png  "Box with hinge generator dialog box")
 In my case some text appears in French language (my default language) because of the inkscape automatic translation feature. For French speakers, I have a version which is entirely in French.
 1. Unit : unit to be chosen, should be mm or inch.
 2. Hinge type, choose either 'steel' or 'integrated wood'
@@ -67,6 +67,31 @@ In my case some text appears in French language (my default language) because of
  When all parameters are set, click on apply and a box will be created. This box is enclosed in an inkscape group. Each element in a group has an id (top, bottom, side) which explain which piece is, but this should be straight forward.
  
  
+#### Card box
+ 
+This kind of box could be used to store cards, it has a single line of slots. Each slot has the same width and height. There is a sliding lid on top of the box.
+
+Here is the box, here build with PMMA (not wood for this one !)
+![CardBox](Cardbox1.png  "PMMA Cardbox")![Cardbox](Cardbox2.png  "PMMA Cardbox"). 
+
+
+
+![Card box dialog](Cardbox_dialog.png  "Cardbox generator dialog box")
+In my case some text appears in French language (my default language) because of the inkscape automatic translation feature. For French speakers, I have a version which is entirely in French.
+1. Unit : unit to be chosen, should be mm or inch.
+2. # of decks : the number of slots in the box
+3. Card width and height : the size of ecah slot, all slots will be the same size.
+4. Deck height : the box height.
+5. Material thickness. 
+6. Burn factor : In order to compensate for the laser ray width, external joints will be larger than internal ones. This will allow to build the box without (too much) glue. 
+ 
+When all parameters are set, click on apply and a box will be created. This box is enclosed in an inkscape group. Each element in a group has an id (top, bottom, side) which explain which piece is, but this should be straight forward.
+Final assembly of the box should be easy, even if little bit more difficult than other boxes, but the first pictutre should help.
+
+Here is the result of this extension :
+![Cardbox_drawing](Cardbox_result.png  "Cardbox result")
+
+
 ### Software installation
 First locate your inkscape extension directory, this directory is listed at Edit > Preferences > System: User extensions.
 First you have to choose your language. If you select english, copy all files ending with 'en.inx' in your inkscape extension directory. If you prefer french, choose files ending with 'fr.inx'.
